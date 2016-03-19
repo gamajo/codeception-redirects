@@ -8,7 +8,7 @@ class Redirects extends Module{
 	/**
 	 * Check that a 301 HTTP Status is returned with the correct Location URL.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Relative or absolute URL of redirect destination.
 	 */
@@ -30,7 +30,7 @@ class Redirects extends Module{
 	 *
 	 * Should be HTTPS.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Relative or absolute URL of redirect destination.
 	 */
@@ -44,7 +44,7 @@ class Redirects extends Module{
 	 *
 	 * Should be HTTP.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param string $url Relative or absolute URL of redirect destination.
 	 */
@@ -59,7 +59,7 @@ class Redirects extends Module{
 	 * By default, BrowserKit will follow redirections, so to check for 30*
 	 * HTTP status codes and Location headers, they have to be turned off.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
 	 * @param bool $followRedirects Optional. Whether to follow redirects or not.
 	 *                              Default is true.
