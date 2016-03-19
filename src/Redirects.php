@@ -5,6 +5,13 @@ namespace Codeception\Module;
 use Codeception\Module;
 
 class Redirects extends Module{
+
+    /**
+     * Protocol constants that can be used with permanentRedirectForProtocol() method.
+     */
+    const PROTOCOL_HTTP = 'http';
+    const PROTOCOL_HTTPS = 'https';
+
 	/**
 	 * Check that a 301 HTTP Status is returned with the correct Location URL.
 	 *
@@ -36,7 +43,7 @@ class Redirects extends Module{
 	 */
 	public function seePermanentRedirectToHttpsFor($url)
 	{
-		$this->permanentRedirectForProtocol($url, 'https');
+		$this->permanentRedirectForProtocol($url, self::PROTOCOL_HTTPS);
 	}
 
 	/**
@@ -50,7 +57,7 @@ class Redirects extends Module{
 	 */
 	public function seePermanentRedirectToHttpFor($url)
 	{
-		$this->permanentRedirectForProtocol($url, 'http');
+		$this->permanentRedirectForProtocol($url, self::PROTOCOL_HTTP);
 	}
 
 	/**
