@@ -1,16 +1,16 @@
 {
   "name": "gamajo/codeception-redirects",
   "description": "Codeception Redirects Module",
-  "minimum-stability": "dev",
   "license": "MIT",
   "authors": [
     {
       "name": "Gary Jones",
-      "homepage": "email@example.com"
+      "homepage": "https://gamajo.com",
+      "role": "Developer"
     }
   ],
-  "require": {
-
+  "support": {
+    "issues": "https://github.com/gamajo/codeception-redirects/issues"
   },
   "autoload": {
     "psr-4": {
