@@ -124,7 +124,7 @@ $I->seePermanentRedirectTo('company/financial-security');
  Check that a 200 HTTP Status is returned with the URL as HTTP.
 
  ```php
- <?php
+<?php
 $I->seePermanentRedirectToHttpFor('insecure-page');
  ```
 
@@ -135,7 +135,7 @@ $I->seePermanentRedirectToHttpFor('insecure-page');
  Check that a 200 HTTP Status is returned with the URL as HTTPS.
 
  ```php
- <?php
+<?php
 $I->seePermanentRedirectToHttpsFor('contact-us');
  ```
 
