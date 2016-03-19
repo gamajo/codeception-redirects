@@ -16,7 +16,7 @@ class Redirects extends Module{
 	{
 		$response       = $this->getModule('PhpBrowser')->client->getInternalResponse();
 		$responseCode   = $response->getStatus();
-		$locationHeader = $response->getHeaders()[ 'Location' ][ 0 ];
+		$locationHeader = $response->getHeader('Location', true);
 
 		// Check for 301 response code.
 		$this->assertEquals(301, $responseCode);
