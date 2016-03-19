@@ -101,7 +101,6 @@ Methods expected to be used in Cepts and Cests.
 Sets whether to automatically follow redirects or not.
 
 ```php
-<?php
 $I->followRedirects(false);
 ```
 
@@ -112,7 +111,6 @@ $I->followRedirects(false);
 Checks for a `Location` response header and a `301` HTTP Status response code. Fails if either is missing, or `Location` header value does not match the `$url`.
 
 ```php
-<?php
 $I->sendHEAD('company/financial-strength-and-security.cfm');
 $I->seePermanentRedirectTo('company/financial-security');
 ```
@@ -124,7 +122,6 @@ $I->seePermanentRedirectTo('company/financial-security');
  Check that a 200 HTTP Status is returned with the URL as HTTP.
 
  ```php
-<?php
 $I->seePermanentRedirectToHttpFor('insecure-page');
  ```
 
@@ -135,7 +132,6 @@ $I->seePermanentRedirectToHttpFor('insecure-page');
  Check that a 200 HTTP Status is returned with the URL as HTTPS.
 
  ```php
-<?php
 $I->seePermanentRedirectToHttpsFor('contact-us');
  ```
 
