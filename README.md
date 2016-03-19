@@ -105,7 +105,7 @@ Sets whether to automatically follow redirects or not.
 $I->followRedirects(false);
 ```
 
-* `param bool` $followRedirects Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests.'
+* `param bool` $followRedirects Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests.
 
 ### seePermanentRedirectTo
 
