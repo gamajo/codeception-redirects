@@ -105,7 +105,9 @@ Sets whether to automatically follow redirects or not.
 $I->followRedirects(false);
 ```
 
-* `param bool` $followRedirects Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests.
+* `param bool` **`$followRedirects`**
+
+    Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests.
 
 ### seePermanentRedirectTo
 
@@ -117,7 +119,9 @@ $I->sendHEAD('company/financial-strength-and-security.cfm');
 $I->seePermanentRedirectTo('company/financial-security');
 ```
 
-* `param` $url Absolute or relative (to REST config `url`) URL.
+* `param` **`$url`**
+
+    Absolute or relative (to REST config `url`) URL.
 
 ### seePermanentRedirectToHttpFor
 
@@ -128,7 +132,9 @@ $I->seePermanentRedirectTo('company/financial-security');
 $I->seePermanentRedirectToHttpFor('insecure-page');
  ```
 
-* `param` $url Absolute or relative (to REST config `url`) URL.
+* `param` **`$url`**
+
+    Absolute or relative (to REST config `url`) URL.
 
 ### seePermanentRedirectToHttpsFor
 
@@ -139,4 +145,6 @@ $I->seePermanentRedirectToHttpFor('insecure-page');
 $I->seePermanentRedirectToHttpsFor('contact-us');
  ```
 
-* `param` $url Absolute or relative (to REST config `url`) URL.
+* `param` **`$url`**
+
+    Absolute or relative (to REST config `url`) URL.
