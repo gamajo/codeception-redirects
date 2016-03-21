@@ -11,9 +11,11 @@
 namespace Codeception\Module;
 
 use Codeception\Module;
+use Symfony\Component\BrowserKit\Client;
+use Symfony\Component\BrowserKit\Response;
 
 /**
- * Class Redirects
+ * Redirects module for Codeception.
  *
  * @package Codeception\Module
  * @author  Gary Jones
@@ -69,6 +71,7 @@ class Redirects extends Module
      */
     public function seePermanentRedirectTo($url)
     {
+        /** @var Response $response */
         $response       = $this->getModule('PhpBrowser')->client->getInternalResponse();
         $responseCode   = $response->getStatus();
         $locationHeader = $response->getHeader('Location', true);
@@ -103,8 +106,12 @@ class Redirects extends Module
     protected function permanentRedirectForProtocol($url, $protocol)
     {
         $url = ltrim($url, '/');
-        $this->getModule('REST')->sendHead($url);
 
+        /** @var REST $rest */
+        $rest = $this->getModule('REST');
+        $rest->sendHEAD($url);
+
+        /** @var Client $client */
         $client       = $this->getModule('PhpBrowser')->client;
         $responseCode = $client->getInternalResponse()->getStatus();
         $responseUri  = $client->getHistory()->current()->getUri();
