@@ -109,6 +109,8 @@ class Redirects extends Module
     /**
      * Check that a 200 HTTP Status is returned with the correct Location URL.
      *
+     * @since 0.1.0
+     *
      * @param string $url      Relative or absolute URL of redirect destination.
      * @param string $protocol Protocol: 'http' or 'https'.
      */
@@ -138,6 +140,8 @@ class Redirects extends Module
 
     /**
      * Check that a 200 HTTP Status is returned with the correct Location URL.
+     *
+     * @since 0.1.3
      *
      * @param string $url      Relative or absolute URL of redirect destination.
      * @param string $protocol Protocol: 'http' or 'https'.
