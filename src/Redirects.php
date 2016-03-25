@@ -68,9 +68,12 @@ class Redirects extends Module
      * @since 0.1.0
      *
      * @param string $url Relative or absolute URL of redirect destination.
+     * @param string $checkDestinationExists Optional. Whether to check if destination URL is 200 OK.
      */
-    public function seePermanentRedirectTo($url)
+    public function seePermanentRedirectTo($url, $checkDestinationExists = true )
     {
+        $followsRedirects = $this->getModule('PhpBrowser')->client->isFollowingRedirects();
+
         /** @var Response $response */
         $response       = $this->getModule('PhpBrowser')->client->getInternalResponse();
         $responseCode   = $response->getStatus();
@@ -81,6 +84,12 @@ class Redirects extends Module
 
         // Check location header URL contains submitted URL.
         $this->assertContains($url, $locationHeader);
+
+        if ($checkDestinationExists) {
+            $this->followRedirects( true );
+            $this->urlExists( $url );
+            $this->followRedirects( $followsRedirects );
+        }
     }
 
     /**
@@ -120,8 +129,35 @@ class Redirects extends Module
         // Check for 200 response code.
         $this->assertEquals(200, $responseCode);
 
+        // Check that destination URL contains submitted URL part.
+        $this->assertContains($url, $responseUri);
+
         // Check for submitted http/https value matches destination URL.
         $this->assertEquals($protocol, $scheme);
+    }
+
+    /**
+     * Check that a 200 HTTP Status is returned with the correct Location URL.
+     *
+     * @param string $url      Relative or absolute URL of redirect destination.
+     * @param string $protocol Protocol: 'http' or 'https'.
+     */
+    protected function urlExists($url)
+    {
+        $url = ltrim($url, '/');
+
+        /** @var REST $rest */
+        $rest = $this->getModule('REST');
+        $rest->sendHEAD($url);
+
+        /** @var Client $client */
+        $client       = $this->getModule('PhpBrowser')->client;
+        $responseCode = $client->getInternalResponse()->getStatus();
+        $responseUri  = $client->getHistory()->current()->getUri();
+        $scheme       = parse_url($responseUri, PHP_URL_SCHEME);
+
+        // Check for 200 response code.
+        $this->assertEquals(200, $responseCode);
 
         // Check that destination URL contains submitted URL part.
         $this->assertContains($url, $responseUri);
