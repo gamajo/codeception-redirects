@@ -139,7 +139,7 @@ class Redirects extends Module
     }
 
     /**
-     * Check that a 200 HTTP Status is returned with the correct Location URL.
+     * Check that a 200 HTTP Status is returned and the final URL has no more redirects.
      *
      * @since 0.1.3
      *
@@ -153,17 +153,12 @@ class Redirects extends Module
         /** @var REST $rest */
         $rest = $this->getModule('REST');
         $rest->sendHEAD($url);
-
-        /** @var Client $client */
-        $client       = $this->getModule('PhpBrowser')->client;
-        $responseCode = $client->getInternalResponse()->getStatus();
-        $responseUri  = $client->getHistory()->current()->getUri();
-        $scheme       = parse_url($responseUri, PHP_URL_SCHEME);
+        $responseCode = $rest->client->getInternalResponse()->getStatus();
+        $locationHeader = $rest->client->getInternalResponse()->getHeader('Location');
 
         // Check for 200 response code.
         $this->assertEquals(200, $responseCode);
-
-        // Check that destination URL contains submitted URL part.
-        $this->assertContains($url, $responseUri);
+        // Check that destination URL does not try to redirect.
+        $this->assertNull($locationHeader);
     }
 }
