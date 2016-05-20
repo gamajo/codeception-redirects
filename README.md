@@ -32,28 +32,61 @@ modules:
 
 ### 301 Redirects
 
-Here's a Cept which checks 301 redirects. We turn off automatic following of redirects in the Symfony Browserkit client, so that it doesn't just follow the redirects to the final destination.
+Here's a Cest which checks 301 redirects. We turn off automatic following of redirects in the Symfony Browserkit client, so that it doesn't just follow the redirects to the final destination.
 
 ```php
 <?php
-// @group redirects
 
-$I = new AcceptanceTester($scenario);
-$I->wantTo('check 301 redirects are working');
+use Codeception\Example;
 
-// For all redirects, a Location header is sent, so we stop the redirect
-// and just check that header instead.
+class RedirectsCest {
+    /**
+     * @var AcceptanceTester
+     */
+    protected $I;
 
-$I->followRedirects(false);
+    public function _before( AcceptanceTester $I ) {
+        $this->I = $I;
+        $this->I->followRedirects(false);
+    }
 
-// Check example.com/twitter redirects to my Twitter profile
-$I->sendHEAD('twitter');
-$I->seePermanentRedirectTo('https://twitter.com/GaryJ');
+    /**
+     * @example(old="content/abou", new="about-us")
+     * @example(old="content/abou/over.php", new="about-us/company-overview")
+     * @example(old="content/abou/miss.php", new="about-us/top-third-mission")
+     * @example(old="content/abou/exec.php", new="about-us/executive-team")
+     * @example(old="content/abou/team.php", new="about-us/risk-management-specialists")
+     * @group redirects
+     * @group redirectsabout
+     */
+    public function redirectOldAboutUrlsToAboutUsPages( AcceptanceTester $I, Example $example ) {
+        $this->redirectOldToNew( $example['old'], $example['new'] );
+    }
 
-// Check example.com/company.cfm redirects to example.com/about-us
-$I->sendHEAD('company.cfm');
-$I->seePermanentRedirectTo('company/about-us');
+    /**
+     * @example(old="content/myac/index.php", new="my-account")
+     * @example(old="content/myac/stat.php", new="my-account/account-statements-explained")
+     * @example(old="content/myac/depo.php", new="my-account/deposits-withdrawals")
+     * @example(old="content/myac/wire.php", new="wire-instructions-r-j-obrien")
+     * @group redirects
+     * @group redirectsmyaccount
+     */
+    public function redirectOldMyAccountUrlsToNewMyAccountPages( AcceptanceTester $I, Example $example ) {
+        $this->redirectOldToNew( $example['old'], $example['new'] );
+    }
 
+    private function redirectOldToNew($old, $new) {
+        $this->I->sendHEAD( $old );
+        $this->I->seePermanentRedirectTo( $new );
+    }
+}
+
+```
+
+Grouping the tests like these mean you can run individual groups of tests more easily:
+
+```sh
+vendor/bin/codecept run --env=staging --group=redirectsmyaccount
 ```
 
 ### Protocol Redirects

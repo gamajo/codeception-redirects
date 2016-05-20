@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Change the check for URL exists, to just it being a 200 and not having any more redirects.
+
 ## [0.1.3] - 2016-03-25
 - Improve `seePermanentRedirectTo()` to check if destination URL exists.
 - Add file-level DocBlock.
