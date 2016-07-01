@@ -85,7 +85,7 @@ class Redirects extends Module
         // Check location header URL contains submitted URL.
         $this->assertContains($url, $locationHeader);
 
-        if ($checkDestinationExists) {
+        if ($checkDestinationExists && 'false' !== $checkDestinationExists) {
             $this->followRedirects( true );
             $this->urlExists( $url );
             $this->followRedirects( $followsRedirects );
