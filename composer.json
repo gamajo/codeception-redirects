@@ -16,5 +16,8 @@
     "psr-4": {
       "Codeception\\Module\\": "src"
     }
+  },
+  "require": {
+    "codeception/codeception": "^2.2.0"
   }
 }
