@@ -4,7 +4,7 @@
  *
  * @package   gamajo\codeception-redirects
  * @author    Gary Jones
- * @copyright 2016 Gamajo Tech
+ * @copyright 2016 Gamajo
  * @license   MIT
  */
 
@@ -49,73 +49,135 @@ class Redirects extends Module
     }
 
     /**
-     * Check that a 200 HTTP Status is returned with the correct Location URL.
+     * Check if redirections are being followed or not.
      *
-     * Should be HTTP.
+     * @since 0.2.0
      *
-     * @since 0.1.0
-     *
-     * @param string $url Relative or absolute URL of redirect destination.
+     * @return bool True if redirects are being followed, false otherwise.
      */
-    public function seePermanentRedirectToHttpFor($url)
+    protected function isFollowingRedirects()
     {
-        $this->permanentRedirectForProtocol($url, self::PROTOCOL_HTTP);
+        return $this->getModule('PhpBrowser')->client->isFollowingRedirects();
     }
 
     /**
      * Check that a 301 HTTP Status is returned with the correct Location URL.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
-     * @param string $url Relative or absolute URL of redirect destination.
-     * @param string $checkDestinationExists Optional. Whether to check if destination URL is 200 OK.
+     * @param string $oldUrl Relative or absolute URL that should be redirected.
+     * @param string $newUrl Relative or absolute URL of redirect destination.
      */
-    public function seePermanentRedirectTo($url, $checkDestinationExists = true )
+    public function seePermanentRedirectBetween($oldUrl, $newUrl)
     {
-        $followsRedirects = $this->getModule('PhpBrowser')->client->isFollowingRedirects();
+        // We must follow all redirects, so save current situation, force follow redirects, and revert at the end.
+        $followsRedirects = $this->isFollowingRedirects();
+        $this->followRedirects(false);
 
-        /** @var Response $response */
-        $response       = $this->getModule('PhpBrowser')->client->getInternalResponse();
+        $response       = $this->sendHeadAndGetResponse($oldUrl);
         $responseCode   = $response->getStatus();
         $locationHeader = $response->getHeader('Location', true);
 
         // Check for 301 response code.
-        $this->assertEquals(301, $responseCode);
+        $this->assertEquals(301, $responseCode, 'Response code was not 301.');
 
         // Check location header URL contains submitted URL.
-        $this->assertContains($url, $locationHeader);
+        $this->assertContains($newUrl, $locationHeader, 'Redirect destination not found in Location header.');
 
-        if ($checkDestinationExists && 'false' !== $checkDestinationExists) {
-            $this->followRedirects( true );
-            $this->urlExists( $url );
-            $this->followRedirects( $followsRedirects );
-        }
+        $this->followRedirects($followsRedirects);
     }
 
     /**
-     * Check that a 200 HTTP Status is returned with the correct Location URL.
+     * Check that a 200 HTTP Status is returned and the URL has no redirects.
      *
-     * Should be HTTPS.
-     *
-     * @since 0.1.0
+     * @since 0.1.3
+     * @since 0.2.0 Renamed method, made public.
      *
      * @param string $url Relative or absolute URL of redirect destination.
      */
-    public function seePermanentRedirectToHttpsFor($url)
+    public function urlDoesNotRedirect($url)
     {
-        $this->permanentRedirectForProtocol($url, self::PROTOCOL_HTTPS);
+        // We must follow all potential immediate redirects, so save current situation, force follow redirects, and revert at the end.
+        $followsRedirects = $this->isFollowingRedirects();
+        $this->followRedirects(true);
+
+        $response       = $this->sendHeadAndGetResponse($url);
+        $responseCode   = $response->getStatus();
+        $locationHeader = $response->getHeader('Location', true);
+
+        // Check for 200 response code.
+        $this->assertEquals(200, $responseCode, 'Response code was not 200.');
+
+        // Check that destination URL does not try to redirect.
+        // Somewhat redundant, as this should never appear with a 200 HTTP Status code anyway.
+        $this->assertNull($locationHeader, 'Location header was found when it should not exist.');
+
+        $this->followRedirects($followsRedirects);
     }
 
     /**
-     * Check that a 200 HTTP Status is returned with the correct Location URL.
+     * Use REST Module to send HEAD request and return the response.
+     *
+     * @since 0.2.0
+     *
+     * @param string $url
+     *
+     * @return null|Response
+     */
+    protected function sendHeadAndGetResponse($url) {
+        /** @var REST $rest */
+        $rest = $this->getModule('REST');
+        $rest->sendHEAD($url);
+
+        return $rest->client->getInternalResponse();
+    }
+
+    /**
+     * Check that a 200 HTTP Status is eventually returned with the HTTP protocol.
+     *
+     * Should be HTTP. The URL should be the same - only the protocol is different.
      *
      * @since 0.1.0
+     * @since 0.2.0 Method renamed.
+     *
+     * @param string $url Relative or absolute URL of redirect destination.
+     */
+    public function seeHttpProtocolAlwaysUsedFor($url)
+    {
+        $this->checkUrlAndProtocolAreCorrect($url, self::PROTOCOL_HTTP);
+    }
+
+    /**
+     * Check that a 200 HTTP Status is eventually returned with the HTTPS protocol.
+     *
+     * Should be HTTPS. The URL should be the same - only the protocol is different.
+     *
+     * @since 0.1.0
+     * @since 0.2.0 Method renamed.
+     *
+     * @param string $url Relative or absolute URL of redirect destination.
+     */
+    public function seeHttpsProtocolAlwaysUsedFor($url)
+    {
+        $this->checkUrlAndProtocolAreCorrect($url, self::PROTOCOL_HTTPS);
+    }
+
+    /**
+     * For a given URL, check that a 200 HTTP Status is returned, the protocol matches given value,
+     * and URL (except maybe protocol) has not changed.
+     *
+     * @since 0.1.0
+     * @since 0.2.0 Method renamed.
      *
      * @param string $url      Relative or absolute URL of redirect destination.
      * @param string $protocol Protocol: 'http' or 'https'.
      */
-    protected function permanentRedirectForProtocol($url, $protocol)
+    protected function checkUrlAndProtocolAreCorrect($url, $protocol)
     {
+        // We must follow all redirects, so save current situation, force follow redirects, and revert at the end.
+        $followsRedirects = $this->isFollowingRedirects();
+        $this->followRedirects(true);
+
         $url = ltrim($url, '/');
 
         /** @var REST $rest */
@@ -129,36 +191,14 @@ class Redirects extends Module
         $scheme       = parse_url($responseUri, PHP_URL_SCHEME);
 
         // Check for 200 response code.
-        $this->assertEquals(200, $responseCode);
+        $this->assertEquals(200, $responseCode, 'Response code was not 200.');
 
         // Check that destination URL contains submitted URL part.
-        $this->assertContains($url, $responseUri);
+        $this->assertContains($url, $responseUri, 'Destination URL does not contain the original URL.');
 
         // Check for submitted http/https value matches destination URL.
-        $this->assertEquals($protocol, $scheme);
-    }
+        $this->assertEquals($protocol, $scheme, 'Protocol at destination URL does not match expected value.');
 
-    /**
-     * Check that a 200 HTTP Status is returned and the final URL has no more redirects.
-     *
-     * @since 0.1.3
-     *
-     * @param string $url      Relative or absolute URL of redirect destination.
-     * @param string $protocol Protocol: 'http' or 'https'.
-     */
-    protected function urlExists($url)
-    {
-        $url = ltrim($url, '/');
-
-        /** @var REST $rest */
-        $rest = $this->getModule('REST');
-        $rest->sendHEAD($url);
-        $responseCode = $rest->client->getInternalResponse()->getStatus();
-        $locationHeader = $rest->client->getInternalResponse()->getHeader('Location');
-
-        // Check for 200 response code.
-        $this->assertEquals(200, $responseCode);
-        // Check that destination URL does not try to redirect.
-        $this->assertNull($locationHeader);
+        $this->followRedirects($followsRedirects);
     }
 }

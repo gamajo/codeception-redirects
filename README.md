@@ -47,7 +47,6 @@ class RedirectsCest {
 
     public function _before( AcceptanceTester $I ) {
         $this->I = $I;
-        $this->I->followRedirects(false);
     }
 
     /**
@@ -56,11 +55,12 @@ class RedirectsCest {
      * @example(old="content/abou/miss.php", new="about-us/top-third-mission")
      * @example(old="content/abou/exec.php", new="about-us/executive-team")
      * @example(old="content/abou/team.php", new="about-us/risk-management-specialists")
+     *
      * @group redirects
      * @group redirectsabout
      */
     public function redirectOldAboutUrlsToAboutUsPages( AcceptanceTester $I, Example $example ) {
-        $this->redirectOldToNew( $example['old'], $example['new'] );
+        $this->testIfOldRedirectsToNew($example['old'], $example['new']);
     }
 
     /**
@@ -68,16 +68,30 @@ class RedirectsCest {
      * @example(old="content/myac/stat.php", new="my-account/account-statements-explained")
      * @example(old="content/myac/depo.php", new="my-account/deposits-withdrawals")
      * @example(old="content/myac/wire.php", new="wire-instructions-r-j-obrien")
+     *
      * @group redirects
      * @group redirectsmyaccount
      */
     public function redirectOldMyAccountUrlsToNewMyAccountPages( AcceptanceTester $I, Example $example ) {
-        $this->redirectOldToNew( $example['old'], $example['new'] );
+        $this->testIfOldRedirectsToNew( $example['old'], $example['new'] );
     }
 
-    private function redirectOldToNew($old, $new) {
-        $this->I->sendHEAD( $old );
-        $this->I->seePermanentRedirectTo( $new );
+    private function testIfOldRedirectsToNew($old, $new, $checkDestination = true) {
+        $this->I->seePermanentRedirectBetween($old, $new);
+        if ($checkDestinationExists) {
+            $this->I->urlDoesNotRedirect($new);
+        }
+
+        // Check old URL with trailing slash also redirects.
+        if (
+            '/' !== substr($old, -1) &&
+            false === strpos( strrev($old), strrev('.php')) &&
+            false === strpos( strrev($old), strrev('.pdf')) &&
+            false === strpos( $old, '?')
+        ) {
+            $old .= '/';
+            $this->testIfOldRedirectsToNew($old, $new, $checkDestinationExists);
+        }
     }
 }
 
@@ -109,7 +123,7 @@ class ProtocolRedirectsCest
     public function forceHttp(Login $I)
     {
         $I->wantTo('check forced redirects to HTTP are working.');
-        $I->seePermanentRedirectToHttpFor(ProfileCalendar::$URL);
+        $I->seeHttpProtocolAlwaysUsedFor(ProfileCalendar::$URL);
     }
 
     /**
@@ -118,8 +132,8 @@ class ProtocolRedirectsCest
     public function forceHttps(Login $I)
     {
         $I->wantTo('check forced redirects to HTTPS are working.');
-        $I->seePermanentRedirectToHttpsFor(ProfileContactInformation::$URL);
-        $I->seePermanentRedirectToHttpsFor(ProfileMyProducts::$URL);
+        $I->seeHttpsProtocolAlwaysUsedFor(ProfileContactInformation::$URL);
+        $I->seeHttpsProtocolAlwaysUsedFor(ProfileMyProducts::$URL);
     }
 }
 
@@ -139,24 +153,38 @@ $I->followRedirects(false);
 
 * `param bool` **`$followRedirects`**
 
-    Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests.
+    Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests. Other methods in this package already call this as needed.
 
-### seePermanentRedirectTo
+### seePermanentRedirectBetween
 
-Checks for a `Location` response header and a `301` HTTP Status response code. Fails if either is missing, or `Location` header value does not match the `$url`.
+Check that a 301 HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
 
 ```php
-$I->sendHEAD('company/financial-strength-and-security.cfm');
-$I->seePermanentRedirectTo('company/financial-security');
+$I->seePermanentRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security');
 ```
+
+* `param` **`$oldUrl`**
+
+    Relative or absolute URL that should be redirected.
+* `param` **`$newUrl`**
+
+    Relative or absolute URL of redirect destination.
+
+### urlDoesNotRedirect
+
+ Check that a 200 HTTP Status is returned and the URL has no redirects. Allows the possibility of following redirects.
+
+ ```php
+$I->urlDoesNotRedirect('company/financial-security');
+ ```
 
 * `param` **`$url`**
 
     Absolute or relative (to REST config `url`) URL.
 
-### seePermanentRedirectToHttpFor
+### seeHttpProtocolAlwaysUsedFor
 
- Check that a 200 HTTP Status is returned with the URL as HTTP.
+ Check that a 200 HTTP Status is eventually returned with the HTTP protocol. Follows redirects automatically.
 
  ```php
 $I->seePermanentRedirectToHttpFor('insecure-page');
@@ -168,7 +196,7 @@ $I->seePermanentRedirectToHttpFor('insecure-page');
 
 ### seePermanentRedirectToHttpsFor
 
- Check that a 200 HTTP Status is returned with the URL as HTTPS.
+ Check that a 200 HTTP Status is eventually returned with the HTTPS protocol. Follows redirects automatically.
 
  ```php
 $I->seePermanentRedirectToHttpsFor('contact-us');
