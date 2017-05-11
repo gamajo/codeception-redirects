@@ -70,7 +70,7 @@ class Redirects extends Module
      */
     public function seePermanentRedirectBetween($oldUrl, $newUrl)
     {
-        // We must follow all redirects, so save current situation, force follow redirects, and revert at the end.
+        // We must not follow all redirects, so save current situation, force disable follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
         $this->followRedirects(false);
 
@@ -97,9 +97,9 @@ class Redirects extends Module
      */
     public function urlDoesNotRedirect($url)
     {
-        // We must follow all potential immediate redirects, so save current situation, force follow redirects, and revert at the end.
+        // We must not follow all redirects, so save current situation, force disable follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
-        $this->followRedirects(true);
+        $this->followRedirects(false);
 
         $response       = $this->sendHeadAndGetResponse($url);
         $responseCode   = $response->getStatus();
