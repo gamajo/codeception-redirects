@@ -97,6 +97,10 @@ class Redirects extends Module
      */
     public function urlDoesNotRedirect($url)
     {
+        if ('/' === $url) {
+            $url = '';
+        }
+
         // We must not follow all redirects, so save current situation, force disable follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
         $this->followRedirects(false);
