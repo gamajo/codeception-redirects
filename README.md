@@ -30,7 +30,7 @@ modules:
 
 ## Example Usage
 
-### 301 Redirects
+### 301 Permanent Redirects
 
 Here's a Cest which checks 301 redirects. We turn off automatic following of redirects in the Symfony Browserkit client, so that it doesn't just follow the redirects to the final destination.
 
@@ -103,6 +103,10 @@ Grouping the tests like these mean you can run individual groups of tests more e
 vendor/bin/codecept run --env=staging --group=redirectsmyaccount
 ```
 
+### 307 Temporary Redirects
+
+The above example code also applies to checking for 307 Temporary Redirect, except the `seeTemporaryRedirectBetween()` method is used instead of `seePermanentRedirectBetween()`.
+
 ### Protocol Redirects
 
 Here's a Cest which checks protocol redirects, to see if a URL is forced to be served as `http://` or `https://`.
@@ -161,6 +165,21 @@ Check that a 301 HTTP Status is returned with the correct Location URL. Fails if
 
 ```php
 $I->seePermanentRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security');
+```
+
+* `param` **`$oldUrl`**
+
+    Relative or absolute URL that should be redirected.
+* `param` **`$newUrl`**
+
+    Relative or absolute URL of redirect destination.
+    
+### seeTemporaryRedirectBetween
+
+Check that a 307 HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
+
+```php
+$I->seeTemporaryRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security');
 ```
 
 * `param` **`$oldUrl`**

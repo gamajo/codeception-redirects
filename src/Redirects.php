@@ -70,6 +70,32 @@ class Redirects extends Module
      */
     public function seePermanentRedirectBetween($oldUrl, $newUrl)
     {
+        $this->seeRedirectBetween($oldUrl, $newUrl, 301);
+    }
+
+    /**
+     * Check that a 307 HTTP Status is returned with the correct Location URL.
+     *
+     * @since 0.3.0
+     *
+     * @param string $oldUrl Relative or absolute URL that should be redirected.
+     * @param string $newUrl Relative or absolute URL of redirect destination.
+     */
+    public function seeTemporaryRedirectBetween($oldUrl, $newUrl)
+    {
+        $this->seeRedirectBetween($oldUrl, $newUrl, 307);
+    }
+
+    /**
+     * Check that a redirection occurs.
+     *
+     * @since 0.2.0
+     *
+     * @param string $oldUrl Relative or absolute URL that should be redirected.
+     * @param string $newUrl Relative or absolute URL of redirect destination.
+     */
+    protected function seeRedirectBetween($oldUrl, $newUrl, $statusCode)
+    {
         // We must not follow all redirects, so save current situation, force disable follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
         $this->followRedirects(false);
@@ -78,8 +104,8 @@ class Redirects extends Module
         $responseCode   = $response->getStatus();
         $locationHeader = $response->getHeader('Location', true);
 
-        // Check for 301 response code.
-        $this->assertEquals(301, $responseCode, 'Response code was not 301.');
+        // Check for correct response code.
+        $this->assertEquals($statusCode, $responseCode, 'Response code was not ' . $statusCode . '.');
 
         // Check location header URL contains submitted URL.
         $this->assertContains($newUrl, $locationHeader, 'Redirect destination not found in Location header.');
