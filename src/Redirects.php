@@ -10,7 +10,6 @@
 
 namespace Codeception\Module;
 
-use Codeception\Module;
 use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\BrowserKit\Response;
 
@@ -91,24 +90,30 @@ class Redirects extends Module
      *
      * @since 0.2.0
      *
-     * @param string $oldUrl Relative or absolute URL that should be redirected.
-     * @param string $newUrl Relative or absolute URL of redirect destination.
+     * @param string  $oldUrl     Relative or absolute URL that should be redirected.
+     * @param string  $newUrl     Relative or absolute URL of redirect destination.
+     * @param integer $statusCode Status code to check for.
      */
     protected function seeRedirectBetween($oldUrl, $newUrl, $statusCode)
     {
-        // We must not follow all redirects, so save current situation, force disable follow redirects, and revert at the end.
+        // We must not follow all redirects, so save current situation,
+        // force disable follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
         $this->followRedirects(false);
 
-        $response       = $this->sendHeadAndGetResponse($oldUrl);
-        $responseCode   = $response->getStatus();
-        $locationHeader = $response->getHeader('Location', true);
+        $response = $this->sendHeadAndGetResponse($oldUrl);
 
-        // Check for correct response code.
-        $this->assertEquals($statusCode, $responseCode, 'Response code was not ' . $statusCode . '.');
+        if (null !== $response) {
+            $responseCode   = $response->getStatus();
+            $locationHeader = $response->getHeader('Location', true);
 
-        // Check location header URL contains submitted URL.
-        $this->assertContains($newUrl, $locationHeader, 'Redirect destination not found in Location header.');
+            // Check for correct response code.
+            $this->assertEquals($statusCode, $responseCode, 'Response code was not ' . $statusCode . '.');
+
+            // Check location header URL contains submitted URL.
+            $this->assertContains($newUrl, $locationHeader, 'Redirect destination not found in Location header.');
+        }
+
 
         $this->followRedirects($followsRedirects);
     }
@@ -127,20 +132,24 @@ class Redirects extends Module
             $url = '';
         }
 
-        // We must not follow all redirects, so save current situation, force disable follow redirects, and revert at the end.
+        // We must not follow all redirects, so save current situation,
+        // force disable follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
         $this->followRedirects(false);
 
         $response       = $this->sendHeadAndGetResponse($url);
-        $responseCode   = $response->getStatus();
-        $locationHeader = $response->getHeader('Location', true);
 
-        // Check for 200 response code.
-        $this->assertEquals(200, $responseCode, 'Response code was not 200.');
+        if (null !== $response) {
+            $responseCode   = $response->getStatus();
+            $locationHeader = $response->getHeader('Location', true);
 
-        // Check that destination URL does not try to redirect.
-        // Somewhat redundant, as this should never appear with a 200 HTTP Status code anyway.
-        $this->assertNull($locationHeader, 'Location header was found when it should not exist.');
+            // Check for 200 response code.
+            $this->assertEquals(200, $responseCode, 'Response code was not 200.');
+
+            // Check that destination URL does not try to redirect.
+            // Somewhat redundant, as this should never appear with a 200 HTTP Status code anyway.
+            $this->assertNull($locationHeader, 'Location header was found when it should not exist.');
+        }
 
         $this->followRedirects($followsRedirects);
     }
@@ -154,7 +163,8 @@ class Redirects extends Module
      *
      * @return null|Response
      */
-    protected function sendHeadAndGetResponse($url) {
+    protected function sendHeadAndGetResponse($url)
+    {
         /** @var REST $rest */
         $rest = $this->getModule('REST');
         $rest->sendHEAD($url);
@@ -206,7 +216,7 @@ class Redirects extends Module
     {
         // We must follow all redirects, so save current situation, force follow redirects, and revert at the end.
         $followsRedirects = $this->isFollowingRedirects();
-        $this->followRedirects(true);
+        $this->followRedirects();
 
         $url = ltrim($url, '/');
 
