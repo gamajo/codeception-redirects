@@ -2,6 +2,7 @@
   "name": "gamajo/codeception-redirects",
   "description": "Codeception Redirects Module",
   "license": "MIT",
+  "homepage": "https://github.com/GaryJones/codeception-redirects",
   "authors": [
     {
       "name": "Gary Jones",
@@ -10,15 +11,40 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/gamajo/codeception-redirects/issues"
+    "issues": "https://github.com/gamajo/codeception-redirects/issues",
+    "source": "https://github.com/gamajo/codeception-redirects"
+  },
+  "config": {
+    "sort-order": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^7.1",
+    "codeception/codeception": "^2.2.0",
+    "roave/security-advisories": "dev-master"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4",
+    "object-calisthenics/phpcs-calisthenics-rules": "^3",
+    "phpunit/phpunit": "^6.4",
+    "squizlabs/php_codesniffer": "^3.1",
+    "wimg/php-compatibility": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "Codeception\\Module\\": "src"
+      "Codeception\\Module\\": "src/"
     }
   },
-  "require": {
-    "codeception/codeception": "^2.2.0",
-    "roave/security-advisories": "dev-master"
+  "autoload-dev": {
+    "psr-4": {
+      "Codeception\\Module\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit",
+    "install-codestandards": [
+      "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+    ]
   }
 }
