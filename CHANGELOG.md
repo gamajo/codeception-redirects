@@ -7,7 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _Nothing yet._
 
-## [0.2.1] - 2017-12-01
+## [0.3.0] - 2017-10-19
+- Add `seeTemporaryRedirectBetween()` method.
+
+## [0.2.1] - 2017-05-12
 - Add security-advisories package & update composer.
 - Fix followRedirects for URL exists check.
 - Handle home page URL no redirection check.
@@ -41,7 +44,8 @@ _Nothing yet._
 ## 0.1.0 - 2016-03-19
 - Initial release.
 
-[Unreleased]: https://github.com/gamajo/codeception-redirects/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/gamajo/codeception-redirects/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/gamajo/codeception-redirects/compare/0.2.0...0.2.1
 [0.2.1]: https://github.com/gamajo/codeception-redirects/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/gamajo/codeception-redirects/compare/0.1.4...0.2.0
 [0.1.4]: https://github.com/gamajo/codeception-redirects/compare/0.1.3...0.1.4
