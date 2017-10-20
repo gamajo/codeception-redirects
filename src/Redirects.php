@@ -10,6 +10,7 @@
 
 namespace Codeception\Module;
 
+use Codeception\Module;
 use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\BrowserKit\Response;
 
