@@ -86,6 +86,18 @@ class Redirects extends Module
         $this->seeRedirectBetween($oldUrl, $newUrl, 307);
     }
 
+	/**
+	 * Check that the specified HTTP Status is returned with the correct Location URL.
+	 *
+	 * @param string $oldUrl     Relative or absolute URL that should be redirected.
+	 * @param string $newUrl     Relative or absolute URL of redirect destination.
+	 * @param int    $statusCode HTTP Status code to check against.
+	 */
+	public function seeOtherRedirectBetween($oldUrl, $newUrl, $statusCode)
+	{
+		$this->seeRedirectBetween($oldUrl, $newUrl, $statusCode);
+	}
+
     /**
      * Check that a redirection occurs.
      *
