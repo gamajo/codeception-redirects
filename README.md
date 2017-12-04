@@ -164,7 +164,7 @@ $I->followRedirects(false);
 Check that the specified HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
 
 ```php
-$I->seeRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security', 302 );
+$I->seeRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security', 302);
 ```
 
 * `param` **`$oldUrl`**
