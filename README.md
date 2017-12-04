@@ -159,9 +159,27 @@ $I->followRedirects(false);
 
     Whether to follow automatic redirects or not. Default behaviour is true, so most times you'll want to pass in false for 301 redirects tests. Other methods in this package already call this as needed.
 
+### seeRedirectBetween
+
+Check that the specified HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
+
+```php
+$I->seeRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security', 302 );
+```
+
+* `param` **`$oldUrl`**
+
+    Relative or absolute URL that should be redirected.
+* `param` **`$newUrl`**
+
+    Relative or absolute URL of redirect destination.
+* `param` **`$statusCode`**
+
+    HTTP status code to check for.
+
 ### seePermanentRedirectBetween
 
-Check that a 301 HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
+A convenience method to check that a 301 HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
 
 ```php
 $I->seePermanentRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security');
@@ -176,7 +194,7 @@ $I->seePermanentRedirectBetween('company/financial-strength-and-security.cfm', '
     
 ### seeTemporaryRedirectBetween
 
-Check that a 307 HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
+A convenience method to check that a 307 HTTP Status is returned with the correct Location URL. Fails if either is missing, or `Location` header value does not match the `$url`. Automatically avoids following redirects.
 
 ```php
 $I->seeTemporaryRedirectBetween('company/financial-strength-and-security.cfm', 'company/financial-security');
