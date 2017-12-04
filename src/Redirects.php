@@ -60,8 +60,41 @@ class Redirects extends Module
         return $this->getModule('PhpBrowser')->client->isFollowingRedirects();
     }
 
+	/**
+	 * Check that a redirection occurs.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param string  $oldUrl     Relative or absolute URL that should be redirected.
+	 * @param string  $newUrl     Relative or absolute URL of redirect destination.
+	 * @param integer $statusCode Status code to check for.
+	 */
+	public function seeRedirectBetween($oldUrl, $newUrl, $statusCode)
+	{
+		// We must not follow all redirects, so save current situation,
+		// force disable follow redirects, and revert at the end.
+		$followsRedirects = $this->isFollowingRedirects();
+		$this->followRedirects(false);
+
+		$response = $this->sendHeadAndGetResponse($oldUrl);
+
+		if (null !== $response) {
+			$responseCode   = $response->getStatus();
+			$locationHeader = $response->getHeader('Location', true);
+
+			// Check for correct response code.
+			$this->assertEquals($statusCode, $responseCode, 'Response code was not ' . $statusCode . '.');
+
+			// Check location header URL contains submitted URL.
+			$this->assertContains($newUrl, $locationHeader, 'Redirect destination not found in Location header.');
+		}
+
+
+		$this->followRedirects($followsRedirects);
+	}
+
     /**
-     * Check that a 301 HTTP Status is returned with the correct Location URL.
+     * Convenience method to check that a 301 HTTP Status is returned with the correct Location URL.
      *
      * @since 0.2.0
      *
@@ -74,7 +107,7 @@ class Redirects extends Module
     }
 
     /**
-     * Check that a 307 HTTP Status is returned with the correct Location URL.
+     * Convenience method to check that a 307 HTTP Status is returned with the correct Location URL.
      *
      * @since 0.3.0
      *
@@ -84,39 +117,6 @@ class Redirects extends Module
     public function seeTemporaryRedirectBetween($oldUrl, $newUrl)
     {
         $this->seeRedirectBetween($oldUrl, $newUrl, 307);
-    }
-
-    /**
-     * Check that a redirection occurs.
-     *
-     * @since 0.2.0
-     *
-     * @param string  $oldUrl     Relative or absolute URL that should be redirected.
-     * @param string  $newUrl     Relative or absolute URL of redirect destination.
-     * @param integer $statusCode Status code to check for.
-     */
-    protected function seeRedirectBetween($oldUrl, $newUrl, $statusCode)
-    {
-        // We must not follow all redirects, so save current situation,
-        // force disable follow redirects, and revert at the end.
-        $followsRedirects = $this->isFollowingRedirects();
-        $this->followRedirects(false);
-
-        $response = $this->sendHeadAndGetResponse($oldUrl);
-
-        if (null !== $response) {
-            $responseCode   = $response->getStatus();
-            $locationHeader = $response->getHeader('Location', true);
-
-            // Check for correct response code.
-            $this->assertEquals($statusCode, $responseCode, 'Response code was not ' . $statusCode . '.');
-
-            // Check location header URL contains submitted URL.
-            $this->assertContains($newUrl, $locationHeader, 'Redirect destination not found in Location header.');
-        }
-
-
-        $this->followRedirects($followsRedirects);
     }
 
     /**
