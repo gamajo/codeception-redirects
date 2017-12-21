@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _Nothing yet._
 
+## [0.4.1] - 2017-12-21
+## Changed
+- Reduce minimum PHP requirement from 7.1 to 7.0.
+- Tidy-up remnants of tests/ directory.
+- Fix whitespace code standards. 
+
 ## [0.4.0] - 2017-12-04
 ### Added
 - `.editorconfig`.
@@ -64,7 +70,8 @@ _Nothing yet._
 
 [Tim Jensen]: https://github.com/timothyjensen
 
-[Unreleased]: https://github.com/gamajo/codeception-redirects/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/gamajo/codeception-redirects/compare/0.4.1...HEAD
+[0.4.0]: https://github.com/gamajo/codeception-redirects/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/gamajo/codeception-redirects/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/gamajo/codeception-redirects/compare/0.2.1...0.3.0
 [0.2.1]: https://github.com/gamajo/codeception-redirects/compare/0.2.0...0.2.1
