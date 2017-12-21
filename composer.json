@@ -34,13 +34,7 @@
       "Codeception\\Module\\": "src/"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "Codeception\\Module\\Tests\\": "tests/"
-    }
-  },
   "scripts": {
-    "test": "./vendor/bin/phpunit",
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ]
