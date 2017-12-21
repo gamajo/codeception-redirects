@@ -8,7 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 _Nothing yet._
 
 ## [0.4.1] - 2017-12-21
-## Changed
+### Changed
 - Reduce minimum PHP requirement from 7.1 to 7.0.
 - Tidy-up remnants of tests/ directory.
 - Fix whitespace code standards. 
