@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Stop PHP 7.2 from being an allowed failure in Travis CI.
+
 ### Fixed
 - Change log heading and link.
 
