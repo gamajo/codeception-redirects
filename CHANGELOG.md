@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Change log heading and link.
 
-_Nothing yet._
+### Removed
+- `composer.lock`, since this is a library, not an application.
 
 ## [0.4.1] - 2017-12-21
 ### Changed
