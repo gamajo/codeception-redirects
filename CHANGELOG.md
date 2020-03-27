@@ -3,8 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.5.0] - 2020-03-27
 ### Changed
+- Add compatibility with Codeception v3.
 - Stop PHP 7.2 from being an allowed failure in Travis CI.
 
 ### Fixed
@@ -76,7 +77,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 [Tim Jensen]: https://github.com/timothyjensen
 
-[Unreleased]: https://github.com/gamajo/codeception-redirects/compare/0.4.1...HEAD
+[Unreleased]: https://github.com/gamajo/codeception-redirects/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/gamajo/codeception-redirects/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/gamajo/codeception-redirects/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/gamajo/codeception-redirects/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/gamajo/codeception-redirects/compare/0.2.1...0.3.0
